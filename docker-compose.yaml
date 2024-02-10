@@ -1,0 +1,24 @@
+version: '3.0'
+
+services:
+  django:
+    build: ./backend
+    command: python /code/backend/manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/backend
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - YANDEX_API_KEY=${YANDEX_API_KEY}
+
+  aiogram:
+    build: ./bot
+    command: python /code/bot/main.py
+    volumes:
+      - .:/bot
+    depends_on:
+      - django
+    environment:
+      - TELEGRAM_BOT_API_KEY=${TELEGRAM_BOT_API_KEY}
+      - BACKEND_URL=${BACKEND_URL}
